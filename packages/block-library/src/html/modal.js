@@ -16,6 +16,7 @@ import {
 import { PlainText, store as blockEditorStore } from '@wordpress/block-editor';
 import { fullscreen, square } from '@wordpress/icons';
 import { useViewportMatch } from '@wordpress/compose';
+import { isKeyboardEvent } from '@wordpress/keycodes';
 
 /**
  * Internal dependencies
@@ -25,6 +26,16 @@ import Preview from './preview';
 import { parseContent, serializeContent } from './utils';
 
 const { Tabs } = unlock( componentsPrivateApis );
+
+export function stopUndoRedoKeyboardShortcutPropagation( event ) {
+	if (
+		isKeyboardEvent.primary( event, 'z' ) ||
+		isKeyboardEvent.primary( event, 'y' ) ||
+		isKeyboardEvent.primaryShift( event, 'z' )
+	) {
+		event.stopPropagation();
+	}
+}
 
 export default function HTMLEditModal( { onRequestClose, content, onUpdate } ) {
 	// Parse content into separate sections and use as initial state
@@ -141,6 +152,9 @@ export default function HTMLEditModal( { onRequestClose, content, onUpdate } ) {
 									<PlainText
 										value={ editedHtml }
 										onChange={ setEditedHtml }
+										onKeyDown={
+											stopUndoRedoKeyboardShortcutPropagation
+										}
 										placeholder={ __( 'Write HTML…' ) }
 										aria-label={ __( 'HTML' ) }
 										className="block-library-html__modal-editor"
@@ -156,6 +170,9 @@ export default function HTMLEditModal( { onRequestClose, content, onUpdate } ) {
 										<PlainText
 											value={ editedCss }
 											onChange={ setEditedCss }
+											onKeyDown={
+												stopUndoRedoKeyboardShortcutPropagation
+											}
 											placeholder={ __( 'Write CSS…' ) }
 											aria-label={ __( 'CSS' ) }
 											className="block-library-html__modal-editor"
@@ -172,6 +189,9 @@ export default function HTMLEditModal( { onRequestClose, content, onUpdate } ) {
 										<PlainText
 											value={ editedJs }
 											onChange={ setEditedJs }
+											onKeyDown={
+												stopUndoRedoKeyboardShortcutPropagation
+											}
 											placeholder={ __(
 												'Write JavaScript…'
 											) }
