@@ -422,11 +422,11 @@ export default function ColorPanel( {
 			newValue.elements[ name ].color.gradient = undefined;
 			onChange( newValue );
 		};
-		const setElementGradient = ( newGradient ) => {
+		const setElementGradient = ( newGradient, newSlug ) => {
 			const newValue = setImmutably(
 				value,
 				[ 'elements', name, 'color', 'gradient' ],
-				encodeGradientValue( newGradient )
+				encodeGradientValue( newGradient, newSlug )
 			);
 			newValue.elements[ name ].color.background = undefined;
 			onChange( newValue );
@@ -515,6 +515,14 @@ export default function ColorPanel( {
 						key: 'gradient',
 						label: __( 'Gradient' ),
 						inheritedValue: elementGradient,
+						inheritedSlug: extractPresetSlug(
+							inheritedValue?.elements?.[ name ]?.color?.gradient,
+							'gradient'
+						),
+						userSlug: extractPresetSlug(
+							value?.elements?.[ name ]?.color?.gradient,
+							'gradient'
+						),
 						setValue: setElementGradient,
 						userValue: elementGradientUserColor,
 						isGradient: true,
