@@ -16,22 +16,32 @@ export function ownsSelection( element ) {
 		return true;
 	}
 
+	if ( ! activeElement ) {
+		return false;
+	}
+
+	// Check the selection before the editing host. When the host is the canvas
+	// wrapper it contains every editable element, so the host checks pass for
+	// all of them and only the selection tells them apart. Reading
+	// `isContentEditable` also forces a style and layout tree update, so
+	// leaving it last keeps that off the hot path: with an editable element per
+	// block, every instance would otherwise pay it on every keystroke.
+	const selection = ownerDocument.defaultView?.getSelection();
+	const anchorNode = selection?.anchorNode;
+	const focusNode = selection?.focusNode;
+
 	if (
-		! activeElement ||
-		! activeElement.isContentEditable ||
-		! element.isContentEditable ||
-		! activeElement.contains( element )
+		! anchorNode ||
+		! focusNode ||
+		! element.contains( anchorNode ) ||
+		! element.contains( focusNode )
 	) {
 		return false;
 	}
 
-	const selection = ownerDocument.defaultView.getSelection();
-	const { anchorNode, focusNode } = selection;
-
 	return (
-		!! anchorNode &&
-		!! focusNode &&
-		element.contains( anchorNode ) &&
-		element.contains( focusNode )
+		activeElement.isContentEditable &&
+		element.isContentEditable &&
+		activeElement.contains( element )
 	);
 }
