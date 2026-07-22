@@ -1,0 +1,1 @@
+import{u as o}from"./index-BWRxYD8V.js";import{B as r}from"./index-CmnH6PHu.js";function useBaseControlProps(s){const{help:e,id:n,...p}=s,t=o(r,"wp-components-base-control",n);return{baseControlProps:{id:t,help:e,...p},controlProps:{id:t,...e?{"aria-describedby":`${t}__help`}:{}}}}export{useBaseControlProps as u};
